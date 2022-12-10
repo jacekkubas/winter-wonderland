@@ -43,7 +43,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 
 		this.physics.add.collider(this.player, this.ground);
 
-		this.stars.setTileIndexCallback(5, (a: Phaser.Physics.Arcade.Sprite, tile: Phaser.Tilemaps.Tile) => {
+		this.stars.setTileIndexCallback(5, (_a: Phaser.Physics.Arcade.Sprite, tile: Phaser.Tilemaps.Tile) => {
 			this.collectStar(this.stars, tile);
 		}, this);
 
