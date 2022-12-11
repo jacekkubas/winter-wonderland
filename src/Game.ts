@@ -9,6 +9,7 @@ export default class Game extends Phaser.Scene {
 	private ground!: Phaser.Tilemaps.TilemapLayer;
 	private stars!: Phaser.Tilemaps.TilemapLayer;
 	private snowmans!: Phaser.Tilemaps.TilemapLayer;
+	private finalCount = 99;
 	private count = 0;
 	private speed = 200;
 	private numb = false;
@@ -24,7 +25,7 @@ export default class Game extends Phaser.Scene {
 		this.load.image('player', '/player.png');
 		this.load.image('snowman', '/snowman.png');
 	}
-
+	
 	create() {
 		this.scene.run('game-ui')
 
@@ -35,6 +36,9 @@ export default class Game extends Phaser.Scene {
 		
 		this.ground = this.map.createLayer('Ground', this.tileset, 0, 0);
 		this.stars = this.map.createLayer('coins', this.tileset, 0, 0);
+		setTimeout(() => {
+			this.finalCount = this.stars.tilesDrawn
+		}, 100)
 		this.snowmans = this.map.createLayer('snowmans', this.tileset, 0, 0);
 
 		this.ground.setCollisionByProperty({ collide: true });
@@ -121,12 +125,10 @@ export default class Game extends Phaser.Scene {
 			}
 		}
 
-		if (this.cursors.space.isDown) {
-			if (this.count >= 1) {
+		if ((this.count >= this.finalCount)) {
 				window.level++;
 				this.scene.pause('game-ui');
 				this.scene.start('before-level')
-			}
 		}
 	}
 }
