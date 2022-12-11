@@ -10,6 +10,10 @@ export default class BeforeLevel extends Phaser.Scene {
 	}
 
 	create() {
+		if (this.registry.list.level >= 3) {
+			this.scene.start('end')
+		}
+
 		this.registry.set('level', this.registry.list.level + 1);
 		this.scene.add(`level${this.registry.list.level}`, Game)
 		

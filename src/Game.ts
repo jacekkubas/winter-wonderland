@@ -38,7 +38,7 @@ export default class Game extends Phaser.Scene {
 		this.ground = this.map.createLayer('Ground', this.tileset, 0, 0);
 		this.stars = this.map.createLayer('coins', this.tileset, 0, 0);
 		setTimeout(() => {
-			this.finalCount = this.stars.tilesDrawn
+			this.finalCount = this.stars.tilesDrawn;
 		}, 100)
 		this.snowmans = this.map.createLayer('snowmans', this.tileset, 0, 0);
 
@@ -55,6 +55,12 @@ export default class Game extends Phaser.Scene {
 			this.collectStar(this.stars, tile);
 		}, this);
 
+		const stars = this.stars.createFromTiles(5, 5, {key: 'star'});
+		setTimeout(() => {
+			this.finalCount = stars.length;
+			stars.forEach(star => star.destroy())
+		}, 100);
+		
 		const snowmans = this.snowmans.createFromTiles(8, [], {key: 'snowman'});
 		snowmans.forEach(obj => {
 			obj.setOrigin(0, 0);
@@ -101,7 +107,6 @@ export default class Game extends Phaser.Scene {
 	collectStar (starLayer:Phaser.Tilemaps.TilemapLayer, tile: Phaser.Tilemaps.Tile) {
 		starLayer.removeTileAt(tile.x, tile.y); // remove the tile/coin
 		this.count = this.count + 1;
-
 		sceneEvents.emit('star-collected');
 
 		return false;
