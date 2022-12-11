@@ -1,7 +1,9 @@
 import Phaser from 'phaser'
 import { sceneEvents } from './events/EventsCenter'
 
-export default class HelloWorldScene extends Phaser.Scene {
+export default class Level1 extends Phaser.Scene {
+	private map!: Phaser.Tilemaps.Tilemap
+	private tileset!: Phaser.Tilemaps.Tileset
 	private player!: Phaser.Physics.Arcade.Sprite;
 	private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
 	private ground!: Phaser.Tilemaps.TilemapLayer;
@@ -10,29 +12,30 @@ export default class HelloWorldScene extends Phaser.Scene {
 	private count = 0;
 	private speed = 200;
 	private numb = false;
+	private intervals: any = [];
 
 	constructor() {
-		super('hello-world')
+		super('level1')
 	}
 
 	preload() {
-		this.load.tilemapTiledJSON('map', '/tiled/level1.json');
-		this.load.image('tileset', '/tiled/tileset.png');
-		this.load.image('player', '/tiled/player.png');
-		this.load.image('snowman', '/tiled/snowman.png');
+		this.load.tilemapTiledJSON('map', '/level1.json');
+		this.load.image('tileset', '/tileset.png');
+		this.load.image('player', '/player.png');
+		this.load.image('snowman', '/snowman.png');
 	}
 
 	create() {
 		this.scene.run('game-ui')
 
-		const map:Phaser.Tilemaps.Tilemap = this.make.tilemap({ key: 'map' });
-		const tileset:Phaser.Tilemaps.Tileset = map.addTilesetImage('tileset');
-		this.physics.world.bounds.width = map.widthInPixels;
-    this.physics.world.bounds.height = map.heightInPixels;
+		this.map = this.make.tilemap({ key: 'map' });
+		this.tileset = this.map.addTilesetImage('tileset');
+		this.physics.world.bounds.width = this.map.widthInPixels;
+    this.physics.world.bounds.height = this.map.heightInPixels;
 		
-		this.ground = map.createLayer('Ground', tileset, 0, 0);
-		this.stars = map.createLayer('coins', tileset, 0, 0);
-		this.snowmans = map.createLayer('snowmans', tileset, 0, 0);
+		this.ground = this.map.createLayer('Ground', this.tileset, 0, 0);
+		this.stars = this.map.createLayer('coins', this.tileset, 0, 0);
+		this.snowmans = this.map.createLayer('snowmans', this.tileset, 0, 0);
 
 		this.ground.setCollisionByProperty({ collide: true });
 		this.snowmans.setCollisionByProperty({ collide: true });
@@ -68,25 +71,33 @@ export default class HelloWorldScene extends Phaser.Scene {
 				}, 500)
 			});
 			
-			setInterval(() => {
+			this.intervals.push(setInterval(() => {
 				const random = Math.random() * (300 - 200) + 200;
 				obj.body.velocity.y = random * -1;
-			}, 2000);
+			}, 2000));
+
+			this.events.on('shutdown', this.stopAllIntervals, this);
 		})
 
 		this.physics.add.overlap(this.player, this.stars);
 		
 
 		this.cursors = this.input.keyboard.createCursorKeys();
-		this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+		this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
     this.cameras.main.startFollow(this.player, false);
+	}
+
+	stopAllIntervals() {
+		for(const interval of this.intervals){
+			clearInterval(interval);
+		}
 	}
 
 	collectStar (starLayer:Phaser.Tilemaps.TilemapLayer, tile: Phaser.Tilemaps.Tile) {
 		starLayer.removeTileAt(tile.x, tile.y); // remove the tile/coin
 		this.count = this.count + 1;
 
-		sceneEvents.emit('star-collected', this.count);
+		sceneEvents.emit('star-collected');
 
 		return false;
 	}
@@ -107,6 +118,14 @@ export default class HelloWorldScene extends Phaser.Scene {
 		if (this.cursors.up.isDown) {
 			if (this.player.body.blocked.down) {
 				this.player.body.velocity.y = -280;
+			}
+		}
+
+		if (this.cursors.space.isDown) {
+			if (this.count >= 1) {
+				window.level++;
+				this.scene.pause('game-ui');
+				this.scene.start('before-level')
 			}
 		}
 	}

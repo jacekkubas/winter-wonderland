@@ -14,8 +14,16 @@ export default class GameUI extends Phaser.Scene {
       color: '#000'
 		})
 
-		sceneEvents.on('star-collected', (newCount: number) => {
-			stars.text = newCount.toString();
+
+		sceneEvents.on('star-collected', () => {
+			console.log(this);
+			this.count++;
+			stars.text = this.count.toString();
+		}, this)
+
+		sceneEvents.on('star-reset', () => {
+			this.count = 0;
+			stars.text = this.count.toString();
 		}, this)
 	}
 }
