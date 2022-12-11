@@ -15,12 +15,13 @@ export default class Game extends Phaser.Scene {
 	private numb = false;
 	private intervals: any = [];
 
-	constructor() {
-		super(`level${window.level}`)
-	}
+	// constructor() {
+	// 	super(`level${window.level}`)
+	// }
 
 	preload() {
-		this.load.tilemapTiledJSON(`map${window.level}`, `/level${window.level}.json`);
+		console.log(this.registry.list.level);
+		this.load.tilemapTiledJSON(`map${this.registry.list.level}`, `/level${this.registry.list.level}.json`);
 		this.load.image('tileset', '/tileset.png');
 		this.load.image('player', '/player.png');
 		this.load.image('snowman', '/snowman.png');
@@ -29,7 +30,7 @@ export default class Game extends Phaser.Scene {
 	create() {
 		this.scene.run('game-ui')
 
-		this.map = this.make.tilemap({ key: `map${window.level}` });
+		this.map = this.make.tilemap({ key: `map${this.registry.list.level}` });
 		this.tileset = this.map.addTilesetImage('tileset');
 		this.physics.world.bounds.width = this.map.widthInPixels;
     this.physics.world.bounds.height = this.map.heightInPixels;
@@ -110,10 +111,8 @@ export default class Game extends Phaser.Scene {
 		if (this.numb) return;
 
 		if (this.cursors.left.isDown) {
-			// this.player.body.x -= 5;
 			this.player.setVelocityX(-this.speed)
 		} else if (this.cursors.right.isDown) {
-			// this.player.body.x += 5;
 			this.player.setVelocityX(this.speed)
 		} else {
 			this.player.setVelocityX(0)
@@ -126,7 +125,6 @@ export default class Game extends Phaser.Scene {
 		}
 
 		if ((this.count >= this.finalCount)) {
-				window.level++;
 				this.scene.pause('game-ui');
 				this.scene.start('before-level')
 		}

@@ -10,9 +10,10 @@ export default class BeforeLevel extends Phaser.Scene {
 	}
 
 	create() {
-		this.scene.add(`level${window.level}`, Game)
+		this.registry.set('level', this.registry.list.level + 1);
+		this.scene.add(`level${this.registry.list.level}`, Game)
 		
-    this.add.text(200, 300, ' press space to start level ' + window.level.toString(), {
+    this.add.text(200, 300, ' press space to start level ' + this.registry.list.level.toString(), {
 			fontSize: '21px',
       color: '#000'
 		})
@@ -24,7 +25,7 @@ export default class BeforeLevel extends Phaser.Scene {
 
   update() {
 		if (this.cursors.space.isDown) {
-			this.scene.start(`level${window.level}`)
+			this.scene.start(`level${this.registry.list.level}`)
 		}
 	}
 }
