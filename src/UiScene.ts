@@ -16,7 +16,6 @@ export default class GameUI extends Phaser.Scene {
 
 
 		sceneEvents.on('star-collected', () => {
-			console.log(this);
 			this.count++;
 			stars.text = this.count.toString();
 		}, this)

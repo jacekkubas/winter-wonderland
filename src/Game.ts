@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 import { sceneEvents } from './events/EventsCenter'
 
-export default class Level1 extends Phaser.Scene {
+export default class Game extends Phaser.Scene {
 	private map!: Phaser.Tilemaps.Tilemap
 	private tileset!: Phaser.Tilemaps.Tileset
 	private player!: Phaser.Physics.Arcade.Sprite;
@@ -15,11 +15,11 @@ export default class Level1 extends Phaser.Scene {
 	private intervals: any = [];
 
 	constructor() {
-		super('level1')
+		super(`level${window.level}`)
 	}
 
 	preload() {
-		this.load.tilemapTiledJSON('map', '/level1.json');
+		this.load.tilemapTiledJSON(`map${window.level}`, `/level${window.level}.json`);
 		this.load.image('tileset', '/tileset.png');
 		this.load.image('player', '/player.png');
 		this.load.image('snowman', '/snowman.png');
@@ -28,7 +28,7 @@ export default class Level1 extends Phaser.Scene {
 	create() {
 		this.scene.run('game-ui')
 
-		this.map = this.make.tilemap({ key: 'map' });
+		this.map = this.make.tilemap({ key: `map${window.level}` });
 		this.tileset = this.map.addTilesetImage('tileset');
 		this.physics.world.bounds.width = this.map.widthInPixels;
     this.physics.world.bounds.height = this.map.heightInPixels;
@@ -75,7 +75,7 @@ export default class Level1 extends Phaser.Scene {
 				const random = Math.random() * (300 - 200) + 200;
 				obj.body.velocity.y = random * -1;
 			}, 2000));
-
+      
 			this.events.on('shutdown', this.stopAllIntervals, this);
 		})
 

@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import Game from './Game'
 import { sceneEvents } from './events/EventsCenter'
 
 export default class BeforeLevel extends Phaser.Scene {
@@ -9,6 +10,8 @@ export default class BeforeLevel extends Phaser.Scene {
 	}
 
 	create() {
+		this.scene.add(`level${window.level}`, Game)
+		
     this.add.text(200, 300, ' press space to start level ' + window.level.toString(), {
 			fontSize: '21px',
       color: '#000'
@@ -16,6 +19,7 @@ export default class BeforeLevel extends Phaser.Scene {
 
     this.cursors = this.input.keyboard.createCursorKeys();
 		sceneEvents.emit('star-reset');
+
 	}
 
   update() {
