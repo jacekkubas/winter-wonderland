@@ -10,7 +10,7 @@ export default class BeforeLevel extends Phaser.Scene {
 	}
 
 	create() {
-		if (this.registry.list.level >= 3) {
+		if (this.registry.list.level >= 5) {
 			this.scene.start('end')
 		}
 
